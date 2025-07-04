@@ -39,7 +39,7 @@ public class CheckoutService {
                 shipItems.put(product.getName(), qty);
                 double weight = ((Shippable) product).getWeight() * qty;
                 totalWeight += weight;
-                weightLabels.add((int)(weight * 1000) + "g"); // e.g. 400g
+                weightLabels.add((int)(weight * 1000) + "g"); 
             }
         }
 
