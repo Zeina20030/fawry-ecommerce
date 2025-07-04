@@ -63,18 +63,13 @@ public class CheckoutService {
         }
 
         System.out.println("** Checkout receipt **");
-        for (Map.Entry<String, Integer> entry : shipItems.entrySet()) {
-            String name = entry.getKey();
-            int qty = entry.getValue();
-            double price = 0;
-            for (CartItem item : items) {
-                if (item.getProduct().getName().equals(name)) {
-                    price = item.getProduct().getPrice();
-                    break;
-                }
-            }
-            System.out.printf("%dx %-13s%.0f\n", qty, name, price * qty);
-        }
+for (CartItem item : items) {
+    Product product = item.getProduct();
+    int qty = item.getQuantity();
+    double totalPrice = product.getPrice() * qty;
+    System.out.printf("%dx %-13s%.0f\n", qty, product.getName(), totalPrice);
+}
+
 
         System.out.println("----------------------");
         System.out.printf("Subtotal         %.0f\n", subtotal);
