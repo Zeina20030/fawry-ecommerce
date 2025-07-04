@@ -15,8 +15,6 @@ public class CheckoutService {
         double totalWeight = 0;
 
         List<Shippable> shippableList = new ArrayList<>();
-        List<String> weightLabels = new ArrayList<>();
-        Map<String, Integer> shipItems = new LinkedHashMap<>();
 
         for (CartItem item : items) {
             Product product = item.getProduct();
@@ -34,16 +32,14 @@ public class CheckoutService {
 
             product.DecreaseQuantity(qty);
 
+            subtotal += product.getPrice() * qty;
+
             if (product instanceof Shippable) {
                 double weight = ((Shippable) product).getWeight();
                 for (int i = 0; i < qty; i++) {
                     shippableList.add((Shippable) product);
                     totalWeight += weight;
-                    weightLabels.add((int)(weight * 1000) + "g");
                 }
-
-                subtotal += product.getPrice() * qty;
-                shipItems.put(product.getName(), qty);
             }
         }
 
@@ -58,19 +54,10 @@ public class CheckoutService {
         customer.deductBalance(totalAmount);
 
         if (!shippableList.isEmpty()) {
-            System.out.println("** Shipment notice **");
-
-            for (Map.Entry<String, Integer> entry : shipItems.entrySet()) {
-                System.out.printf("%dx %-13s", entry.getValue(), entry.getKey());
-            }
-            System.out.println(String.join(" ", weightLabels));
-            System.out.printf("Total package weight %.1fkg\n\n", totalWeight);
-
-            // Send to shipping service
             ShippingService.shipItems(shippableList);
         }
 
-        System.out.println("** Checkout receipt **");
+        System.out.println("\n** Checkout receipt **");
         for (CartItem item : items) {
             Product product = item.getProduct();
             int qty = item.getQuantity();
